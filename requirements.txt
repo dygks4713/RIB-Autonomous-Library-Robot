@@ -1,0 +1,13 @@
+# RIB (Robotic Intelligent Buddy) Project Requirements
+# 핵심 비전 및 ArUco 마커 인식 라이브러리
+opencv-python
+opencv-contrib-python
+
+# ROS 2와 OpenCV 간 이미지 변환 (Humble 호환용)
+cvbridge3
+
+# 시스템 안정성을 위한 NumPy 버전 고정 (2.0 미만)
+numpy<2.0
+
+# 아두이노 메가 시리얼 통신용
+pyserial
