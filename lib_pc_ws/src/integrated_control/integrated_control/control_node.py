@@ -14,7 +14,7 @@ class IntegratedLibraryController(Node):
         super().__init__('integrated_control_node')
         
         # [명세 1] Network: 제어 토픽명 고정
-        self.pub_vel = self.create_publisher(Twist, '/rib_cmd_vel', 10)
+        self.pub_vel = self.create_publisher(Twist, '/lib_cmd_vel', 10)
         self.pub_arm = self.create_publisher(String, '/arm_command', 10)
         self.pub_notify = self.create_publisher(String, '/stop_notification', 10)
         
@@ -45,20 +45,19 @@ class IntegratedLibraryController(Node):
         self.create_subscription(CompressedImage, '/camera_arm/image_raw/compressed', self.arm_image_callback, 10)
         self.create_subscription(String, '/scan_command', self.scan_command_callback, 10)
         
-        self.get_logger().info(f"🚀 RIB Master Node Started (Steering Sign: {self.STEERING_SIGN})")
+        self.get_logger().info(f"🚀 LIB Master Node Started (Steering Sign: {self.STEERING_SIGN})")
 
     def reset_internal_states(self):
         """내부 상태 초기화"""
         self.current_step = "IDLE"; self.msg_count = 1
-        # stop_threshold는 이제 콜백에서 동적으로 결정되므로 초기값은 의미상 둡니다.
         self.align_deadzone = 10.0; self.book_offset = 70.0; self.is_aligned = False
         self.align_stable_start_time = None; self.VERIFICATION_DURATION = 3.0; self.last_pulse_time = 0.0
-        self.current_arm_base_angle = 90  
+        self.current_arm_base_angle = 90
 
     def setup_gui(self):
         """[명세 2] GUI 구성"""
-        self.root = tk.Tk(); self.root.title("RIB Robot Control Console")
-        frame = ttk.LabelFrame(self.root, text="[ RIB Project Control ]"); frame.pack(padx=20, pady=20)
+        self.root = tk.Tk(); self.root.title("LIB Robot Control Console")
+        frame = ttk.LabelFrame(self.root, text="[ LIB Project Control ]"); frame.pack(padx=20, pady=20)
         self.status_label = ttk.Label(frame, text="상태: 대기 중", font=("Arial", 12, "bold")); self.status_label.pack(pady=10)
         ttk.Button(frame, text="프로세스 시작 (s)", command=self.start_process).pack(fill="x", pady=5)
         ttk.Button(frame, text="긴급 정지 (Space)", command=self.stop_all).pack(fill="x", pady=5)
@@ -86,8 +85,8 @@ class IntegratedLibraryController(Node):
             if "FWD" in self.current_step or "BWD" in self.current_step:
                 is_fwd = "FWD" in self.current_step
                 
-                # [수정] 전진 시 90.0, 후진 시 95.0 설정
-                current_threshold = 85.0 if is_fwd else 95.0
+                # 전진/후진 임계값 설정
+                current_threshold = 45.0 if is_fwd else 50.0
                 
                 vx = 0.55 if is_fwd else -0.55
                 az = 0.0; arrival_detected = False
@@ -112,7 +111,6 @@ class IntegratedLibraryController(Node):
                         dist = np.linalg.norm(corners[idx][0][0] - corners[idx][0][1])
                         ex = marker_x - cx
                         
-                        # 화면에 현재 적용된 Threshold(90 or 95) 표시
                         marker_status = f"Tracking ID:{active_anchor} Size:{int(dist)}/{int(current_threshold)}"
 
                         if abs(ex) > 15: 
@@ -133,17 +131,18 @@ class IntegratedLibraryController(Node):
                             self.get_logger().info("ID 1 Passed (FWD) - Switching to ID 2 Sequence")
                             self.fwd_to_id2(); return 
 
-                        # [수정] 도착 판정 로직에 current_threshold 적용
+                        # [수정] 마지막 ID 0 복귀 시: 거리 상관없이 발견 즉시 정지
                         if dest_id == 0 and self.current_step == "BWD_TO_ID0":
-                             # ID 0은 후진의 마지막이므로 정밀하게 95.0 체크
-                             if dist > current_threshold:
-                                self.stop_robot_only(); arrival_detected = True
+                            self.get_logger().info(f"ID 0 Detected (Size: {int(dist)}) - Immediate Stop")
+                            self.stop_robot_only(); arrival_detected = True
+                        
+                        # 전진 시 (임계값 체크)
                         elif is_fwd:
-                            # 전진 (90.0)
                             if dist > current_threshold:
                                 self.handle_base_arrival(dest_id); arrival_detected = True
+                        
+                        # 일반 후진 시 (임계값 체크)
                         else:
-                            # 후진 (95.0) - 즉시 정지가 아니라 크기 체크 후 정지
                             if dist > current_threshold:
                                 self.handle_base_arrival(dest_id); arrival_detected = True
                             
@@ -290,7 +289,11 @@ class IntegratedLibraryController(Node):
         self.run_id += 1; self.send_velocity(0.0, 0.0); self.reset_internal_states()
         self.update_status("긴급 정지", "red")
 
-    def stop_robot_only(self): self.send_velocity(0.0, 0.0); self.current_step = "COMPLETED"
+    def stop_robot_only(self): 
+        self.send_velocity(0.0, 0.0); 
+        self.current_step = "COMPLETED"
+        # [GUI 메시지 수정] 여기서 업데이트하면 GUI에도 정상적으로 완료 메시지가 뜹니다.
+        self.update_status("미션 완료 (복귀 성공)", "blue")
 
     def begin_fwd(self, sid=None): self.current_step = "FWD_TO_ID1"
     def fwd_to_id2(self, sid=None): self.current_step = "FWD_TO_ID2"

@@ -9,7 +9,7 @@ import threading
 class Ros2RobotGUI(Node):
     def __init__(self):
         super().__init__('gui_teleop_node')
-        self.wheel_pub = self.create_publisher(Twist, '/rib_cmd_vel', 10)
+        self.wheel_pub = self.create_publisher(Twist, '/lib_cmd_vel', 10)
         self.arm_pub = self.create_publisher(String, '/arm_command', 10)
         
         self.root = tk.Tk()
