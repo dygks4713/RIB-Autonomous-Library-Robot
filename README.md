@@ -1,4 +1,4 @@
-# 📚 LIB-BOT: Autonomous Library Assistant Robot
+# 📚 LIB-Buddy: Autonomous Library Assistant Robot
 An intelligent library assistant robot 'LIB-Buddy' designed for autonomous shelf-tracking, book scanning, and automated navigation using ROS 2 Humble.
 
 ![ROS2](https://img.shields.io/badge/ROS2-Workspace-22314E?style=flat-square&logo=ros)
@@ -7,7 +7,7 @@ An intelligent library assistant robot 'LIB-Buddy' designed for autonomous shelf
 ![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-Edge%20Computing-A22846?style=flat-square&logo=raspberrypi)
 ![Arduino](https://img.shields.io/badge/Arduino-Mega%202560-00979D?style=flat-square&logo=arduino)
 
-**LIB-BOT**은 PC, Raspberry Pi, Arduino Mega 간의 유기적인 분산 제어(Distributed System)를 통해 도서관 서가를 자율 주행하며 책을 인식하고 관리하는 지능형 로봇 프로젝트입니다.
+**LIB-Buddy**은 PC, Raspberry Pi, Arduino Mega 간의 유기적인 분산 제어(Distributed System)를 통해 도서관 서가를 자율 주행하며 책을 인식하고 관리하는 지능형 로봇 프로젝트입니다.
 
 <br>
 
