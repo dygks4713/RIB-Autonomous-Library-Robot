@@ -23,8 +23,9 @@ An intelligent library assistant robot 'LIB-Buddy' designed for autonomous shelf
 
 ```text
 LIB-Autonomous-Library-Robot/
-├── lib_arduino_mega/                   # 하위 하드웨어 제어 및 좌표 연산 모듈
-│   └── robot_final.pt/                 # (AI Model Weights & Scripts)
+├── lib_arduino_mega/                   # 하위 하드웨어 제어용 아두이노 펌웨어
+│   └── robot_final.pt/                 # 아두이노 스케치 디렉토리
+│       └── robot_final.pt.ino          # DC 모터 및 하드웨어 제어 메인 소스코드
 │
 ├── lib_pc_ws/                          # PC용 ROS2 워크스페이스 (Master)
 │   └── src/
@@ -37,7 +38,7 @@ LIB-Autonomous-Library-Robot/
 │       └── robot_vision/               # ArUco 마커 인식 및 이미지 처리 패키지
 │
 ├── requirements.txt                    # 파이썬 의존성 패키지 목록
-└── README.md
+└── README.md                           # 프로젝트 설명서
 ```
 
 ## 🎥작동 시연 영상
