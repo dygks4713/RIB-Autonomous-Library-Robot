@@ -10,7 +10,8 @@ An intelligent library assistant robot 'LIB-Buddy' designed for autonomous shelf
 **LIB-BOT**은 PC, Raspberry Pi, Arduino Mega 간의 유기적인 분산 제어(Distributed System)를 통해 도서관 서가를 자율 주행하며 책을 인식하고 관리하는 지능형 로봇 프로젝트입니다.
 
 <br>
-## 로봇 회로도
+
+## ⚙️ 로봇 회로도
 <img width="1739" height="1414" alt="image" src="https://github.com/user-attachments/assets/11dec041-ff6d-449f-8fe6-da358a776a9c" />
 
 ## 🌟 System Architecture & Features
